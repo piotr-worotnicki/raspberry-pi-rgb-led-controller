@@ -6,6 +6,7 @@ call_template = u'echo "{pin}={value}" > /dev/pi-blaster'
 
 
 def set_color(r, g, b):
-    print call_template.format({u'pin': settings['RED_PIN'], u'value': r})
-    print call_template.format({u'pin': settings['GREEN_PIN'], u'value': g})
-    print call_template.format({u'pin': settings['BLUE_PIN'], u'value': b})
+    resolution = float(255)
+    print call_template.format(**{'pin': settings.RED_PIN, 'value': r / resolution})
+    print call_template.format(**{'pin': settings.GREEN_PIN, 'value': g / resolution})
+    print call_template.format(**{'pin': settings.BLUE_PIN, 'value': b / resolution})

@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from led import views as led_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', led_views.index, name='index'),
 ]
