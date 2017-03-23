@@ -118,3 +118,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+RED_PIN = 17
+GREEN_PIN = 27
+BLUE_PIN = 22
