@@ -123,3 +123,5 @@ STATIC_URL = '/static/'
 RED_PIN = 17
 GREEN_PIN = 27
 BLUE_PIN = 22
+
+LEDS_ENABLED = False

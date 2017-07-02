@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from led.led_wrappper import set_color
+from led.models import CurrentLedState
 
 
 def index(request):
@@ -8,6 +8,6 @@ def index(request):
         r = int(request.POST['red'])
         g = int(request.POST['green'])
         b = int(request.POST['blue'])
-        set_color(r, g, b)
+        CurrentLedState.fade(r, g, b)
 
     return render(request, "sliders.html", context={'r': r, 'g': g, "b": b})
