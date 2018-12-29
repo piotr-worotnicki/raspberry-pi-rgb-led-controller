@@ -8,6 +8,6 @@ def index(request):
         r = int(request.POST['red'])
         g = int(request.POST['green'])
         b = int(request.POST['blue'])
-        CurrentLedState.fade(r, g, b)
+        CurrentLedState.get_solo().set_color(r, g, b)
 
     return render(request, "sliders.html", context={'r': r, 'g': g, "b": b})
