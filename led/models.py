@@ -11,6 +11,9 @@ class Profile(models.Model):
     hold_time = models.IntegerField()  # ms
     fade_time = models.IntegerField()  # ms
 
+    def __unicode__(self):
+        return self.name
+
 
 class LedStateManager(models.Manager):
     def from_profile(self, profile):
