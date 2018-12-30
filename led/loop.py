@@ -21,12 +21,13 @@ def led_control_loop():
     fading = False
 
     while True:
-        new_profile = current_led_state.profile
-        if profile != new_profile:
+        new_profile = CurrentLedState.get_solo().profile
+        if profile.pk != new_profile.pk:
             profile = new_profile
             led_states = LedState.objects.from_profile(profile)
             led_state_index = 0
             timer = 0
+            fading = False
 
         timer += time_resolution
         if not fading and timer >= profile.hold_time:
