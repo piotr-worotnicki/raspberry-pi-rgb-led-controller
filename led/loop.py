@@ -37,7 +37,7 @@ def led_control_loop():
             print('starting fade')
 
         if fading:
-            if timer <= profile.fade_time:
+            if timer < profile.fade_time:
                 red = get_average(led_states[led_state_index].red,
                                   led_states[next_led_state_index].red,
                                   timer,
