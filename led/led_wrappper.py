@@ -11,5 +11,5 @@ def set_color(r, g, b):
         subprocess.call(call_template.format(**{'pin': settings.RED_PIN, 'value': r / resolution}), shell=True)
         subprocess.call(call_template.format(**{'pin': settings.GREEN_PIN, 'value': g / resolution}), shell=True)
         subprocess.call(call_template.format(**{'pin': settings.BLUE_PIN, 'value': b / resolution}), shell=True)
-
-    print('r:{}, g:{}, b:{}'.format(r, g, b))
+    else:
+        print('r:{}, g:{}, b:{}'.format(r, g, b))

@@ -23,7 +23,6 @@ def led_control_loop():
     while True:
         new_profile = current_led_state.profile
         if profile != new_profile:
-            print('profile_changed')
             profile = new_profile
             led_states = LedState.objects.from_profile(profile)
             led_state_index = 0
@@ -34,7 +33,6 @@ def led_control_loop():
             timer = 0
             next_led_state_index = (led_state_index + 1) % len(led_states)
             fading = True
-            print('starting fade')
 
         if fading:
             if timer < profile.fade_time:
@@ -56,9 +54,9 @@ def led_control_loop():
                 fading = False
                 timer = 0
                 led_state_index = next_led_state_index
-                print('fade finished')
-
-        # print(f'doing stuff t={timer}')
+                current_led_state.set_color(led_states[led_state_index].red,
+                                            led_states[led_state_index].green,
+                                            led_states[led_state_index].blue)
         time.sleep(time_resolution / 1000)
 
 
