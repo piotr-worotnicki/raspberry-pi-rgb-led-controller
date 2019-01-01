@@ -1,0 +1,32 @@
+<html>
+<head>
+    <style>
+        * {box-sizing: border-box}
+        .profile-link {
+            font-family: sans-serif;
+            text-decoration: none;
+            text-align: center;
+            color: #422040;
+            display: block;
+            padding: 20px;
+            border: 1px solid #422040;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .profile-link.active {
+            color: white;
+            background-color: #422040;
+        }
+    </style>
+</head>
+<body>
+{% for profile in profiles %}
+    <a href="{% url 'change_profile' profile.pk %}"
+       class="profile-link {% if profile.pk == current_profile.pk %}active{% endif %}"
+    > {{ profile.name }}</a>
+{% endfor %}
+<script>
+
+</script>
+</body>
+</html>

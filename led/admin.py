@@ -8,12 +8,14 @@ from led.models import Profile, LedState, CurrentLedState
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name']
 
 
 @admin.register(LedState)
 class LedStateAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['order', 'profile', 'red', 'green', 'blue']
+    list_filter = ['profile']
+
 
 @admin.register(CurrentLedState)
 class CurrentLedStateAdmin(SingletonModelAdmin):

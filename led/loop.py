@@ -1,68 +1,81 @@
 import time
+
 import django
+
+from led.led_wrappper import set_color
 
 
 def get_average(c1, c2, w1, w2):
-    return (c1*(w2-w1) + c2 * w1) / w2
+    return (c1 * (w2 - w1) + c2 * w1) / w2
 
 
-def led_control_loop():
-    time_resolution = 100
+class LedLoop(object):
+    time_resolution = 50  # in ms
     timer = 0
-    current_led_state = CurrentLedState.get_solo()
-    profile = current_led_state.profile
-    led_states = LedState.objects.from_profile(profile)
+    profile = None
+    led_states = []
     led_state_index = 0
-    current_led_state.set_color(led_states[led_state_index].red,
-                                led_states[led_state_index].green,
-                                led_states[led_state_index].blue)
-
-    next_led_state_index = (led_state_index + 1) % len(led_states)
     fading = False
+    next_led_state_index = 0
 
-    while True:
-        new_profile = CurrentLedState.get_solo().profile
-        if profile.pk != new_profile.pk:
-            profile = new_profile
-            led_states = LedState.objects.from_profile(profile)
-            led_state_index = 0
-            timer = 0
-            fading = False
+    def __init__(self) -> None:
+        super().__init__()
+        self.reset()
 
-        timer += time_resolution
-        if not fading and timer >= profile.hold_time:
-            timer = 0
-            next_led_state_index = (led_state_index + 1) % len(led_states)
-            fading = True
+    def reset(self):
+        self.timer = 0
+        self.profile = CurrentLedState.get_solo().profile
+        self.led_states = LedState.objects.from_profile(self.profile)
+        self.led_state_index = 0
+        self.next_led_state_index = (self.led_state_index + 1) % len(self.led_states)
+        self.fading = False
 
-        if fading:
-            if timer < profile.fade_time:
-                red = get_average(led_states[led_state_index].red,
-                                  led_states[next_led_state_index].red,
-                                  timer,
-                                  profile.fade_time)
-                green = get_average(led_states[led_state_index].green,
-                                    led_states[next_led_state_index].green,
-                                    timer,
-                                    profile.fade_time)
-                blue = get_average(led_states[led_state_index].blue,
-                                   led_states[next_led_state_index].blue,
-                                   timer,
-                                   profile.fade_time)
+        set_color(self.led_states[self.led_state_index].red,
+                  self.led_states[self.led_state_index].green,
+                  self.led_states[self.led_state_index].blue)
 
-                current_led_state.set_color(red, green, blue)
-            else:
-                fading = False
-                timer = 0
-                led_state_index = next_led_state_index
-                current_led_state.set_color(led_states[led_state_index].red,
-                                            led_states[led_state_index].green,
-                                            led_states[led_state_index].blue)
-        time.sleep(time_resolution / 1000)
+    def loop(self):
+        while True:
+            if self.profile.pk != CurrentLedState.get_solo().profile.pk:
+                self.reset()
+
+            self.timer += self.time_resolution
+
+            if not self.fading and self.timer >= self.profile.hold_time:
+                self.timer = 0
+                self.next_led_state_index = (self.led_state_index + 1) % len(self.led_states)
+                self.fading = True
+
+            if self.fading:
+                if self.timer < self.profile.fade_time:
+                    red = get_average(self.led_states[self.led_state_index].red,
+                                      self.led_states[self.next_led_state_index].red,
+                                      self.timer,
+                                      self.profile.fade_time)
+                    green = get_average(self.led_states[self.led_state_index].green,
+                                        self.led_states[self.next_led_state_index].green,
+                                        self.timer,
+                                        self.profile.fade_time)
+                    blue = get_average(self.led_states[self.led_state_index].blue,
+                                       self.led_states[self.next_led_state_index].blue,
+                                       self.timer,
+                                       self.profile.fade_time)
+
+                    set_color(red, green, blue)
+                else:
+                    self.fading = False
+                    self.timer = 0
+                    self.led_state_index = self.next_led_state_index
+                    set_color(self.led_states[self.led_state_index].red,
+                              self.led_states[self.led_state_index].green,
+                              self.led_states[self.led_state_index].blue)
+            time.sleep(self.time_resolution / 1000)
+
 
 
 if __name__ == '__main__':
     django.setup()
     from led.models import CurrentLedState, LedState
 
-    led_control_loop()
+    loop = LedLoop()
+    loop.loop()

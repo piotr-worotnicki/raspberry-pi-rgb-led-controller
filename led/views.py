@@ -1,13 +1,14 @@
-from django.shortcuts import render
-from led.models import CurrentLedState
+from django.shortcuts import render, redirect, get_object_or_404
+from led.models import CurrentLedState, Profile
 
 
 def index(request):
-    r = g = b = 50
-    if request.POST:
-        r = int(request.POST['red'])
-        g = int(request.POST['green'])
-        b = int(request.POST['blue'])
-        CurrentLedState.get_solo().set_color(r, g, b)
+    profiles = Profile.objects.all()
+    current_profile = CurrentLedState.get_solo().profile
+    return render(request, "profiles.html", context={'profiles':profiles, 'current_profile':current_profile})
 
-    return render(request, "sliders.html", context={'r': r, 'g': g, "b": b})
+
+def change_profile(request, pk):
+    profile = get_object_or_404(Profile, pk=pk)
+    CurrentLedState.get_solo().change_profile(profile)
+    return redirect('index')

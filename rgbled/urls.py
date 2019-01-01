@@ -20,4 +20,5 @@ from led import views as led_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', led_views.index, name='index'),
+    url(r'^change_profile/(?P<pk>\d+)/$', led_views.change_profile, name='change_profile'),
 ]
