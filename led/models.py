@@ -28,7 +28,7 @@ class LedState(models.Model):
     objects = LedStateManager()
 
     def __str__(self):
-        return f'{self.profile.name} #{self.order}'
+        return '{} #{}'.format(self.profile.name, self.order)
 
 
 class CurrentLedState(SingletonModel):
